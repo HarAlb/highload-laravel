@@ -36,7 +36,7 @@ services:
     image: postgres:15
     container_name: postgres_db
     environment:
-      POSTGRES_DB: laravel
+      POSTGRES_DB: highload_laravel
       POSTGRES_USER: laravel
       POSTGRES_PASSWORD: secret
     volumes:
