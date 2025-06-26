@@ -23,7 +23,7 @@ class UploadMediaRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|string|max:255',
+            'media' => 'required|file|mimes:jpeg,png,jpg,mp4|max:51200',
         ];
     }
 

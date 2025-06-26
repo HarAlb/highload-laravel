@@ -3,9 +3,13 @@
 namespace Domain\Post;
 
 use Doctrine\ORM\Mapping as ORM;
+use Domain\Media\Media;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'posts')]
+#[ORM\HasLifecycleCallbacks]
 class Post
 {
     #[ORM\Id]
@@ -25,12 +29,18 @@ class Post
     #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $updatedAt;
 
+    /**
+     * @var Collection<int, Media>
+     */
+    private Collection $medias;
+
     public function __construct(string $title, string $content)
     {
         $this->title = $title;
         $this->content = $content;
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = null;
+        $this->medias = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -68,5 +78,44 @@ class Post
     {
         $this->content = $content;
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    public function getMedias(): Collection
+    {
+        return $this->medias;
+    }
+
+    public function addMedia(Media $media): void
+    {
+        if (!$this->medias->contains($media)) {
+            $this->medias->add($media);
+        }
+    }
+
+    public function removeMedia(Media $media): void
+    {
+        $this->medias->removeElement($media);
+    }
+
+    /**
+     * Optional: get last media position
+     */
+    public function getLastMediaPosition(): int
+    {
+        if ($this->medias->isEmpty()) {
+            return 0;
+        }
+
+        $positions = $this->medias->map(fn(Media $m) => $m->getPosition())->toArray();
+
+        return max($positions);
+    }
+
+    #[ORM\PostLoad]
+    public function postLoad(): void
+    {
+        if (!isset($this->medias)) {
+            $this->medias = new ArrayCollection();
+        }
     }
 }

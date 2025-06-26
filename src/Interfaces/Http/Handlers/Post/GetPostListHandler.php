@@ -3,9 +3,9 @@
 namespace Interfaces\Http\Handlers\Post;
 
 use Application\Post\GetPostListService;
+use Domain\Media\Media;
 use Domain\Post\Post;
 use Illuminate\Http\Request;
-use Interfaces\Http\Requests\Post\CreatePostRequest;
 use Shared\Responses\PaginatedJsonResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -31,6 +31,18 @@ class GetPostListHandler
                 'content' => $post->getContent(),
                 'created_at' => $post->getCreatedAt()->format('Y-m-d H:i:s'),
                 'updated_at' => $post->getUpdatedAt()?->format('Y-m-d H:i:s'),
+                'medias' => $post->getMedias()->map(fn (Media $media) => [
+                    'id' => $media->getId(),
+                    'url' => $media->getFilePath(),
+                    'is_video' => $media->isVideo(),
+                    'children' => $media->getChildren()->map(
+                        fn (Media $child) => [
+                            'id' => $child->getId(),
+                            'url' => $child->getFilePath(),
+                            'is_video' => $child->isVideo(),
+                        ]
+                    )->toArray()
+                ])->toArray(),
             ]
         );
     }
