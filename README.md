@@ -54,3 +54,33 @@ docker-compose up -d
 - `/routes/api.php` — API routes  
 - `/docker` — Docker and RabbitMQ configs
 
+## RabbitMQ and Queue Setup
+
+When you run the project with Docker Compose (`docker-compose up`), RabbitMQ will start automatically.
+
+**Important:**  
+Before using the queue system, you need to create the default queue in RabbitMQ. This can be done by connecting to the RabbitMQ management console or using CLI tools.
+
+### Steps to create the default queue:
+
+1. Access RabbitMQ Management UI (usually at `http://localhost:15672`)
+    - Default credentials: `guest` / `guest`
+
+2. Navigate to the **Queues** tab.
+
+3. Create a new queue with the name your app expects (e.g., `media_compress_queue`).
+
+Alternatively, you can declare queues programmatically within your application or queue worker setup to avoid manual creation.
+
+---
+
+Make sure your `.env` file is properly configured for RabbitMQ:
+
+```env
+QUEUE_CONNECTION=rabbitmq
+RABBITMQ_HOST=rabbitmq
+RABBITMQ_PORT=5672
+RABBITMQ_USER=guest
+RABBITMQ_PASSWORD=guest
+RABBITMQ_VHOST=/
+
