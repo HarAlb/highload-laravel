@@ -1,7 +1,9 @@
 <?php
+
 namespace Infrastructure\Post;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityNotFoundException;
 use Domain\Post\Post;
 use Domain\Post\PostRepositoryInterface;
 
